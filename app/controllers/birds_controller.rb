@@ -3,7 +3,7 @@ class BirdsController < ApplicationController
   # GET /birds
   def index
     birds = Bird.all
-    render json: birds
+    render json: birds, status: :ok
   end
 
   # POST /birds
@@ -16,9 +16,9 @@ class BirdsController < ApplicationController
   def show
     bird = Bird.find_by(id: params[:id])
     if bird
-      render json: bird
+      render json: bird, status: :ok
     else
-      render json: { error: "Bird not found" }, status: :not_found
+      render json: { error: 'Bird not found' }, status: :not_found
     end
   end
 
@@ -27,9 +27,9 @@ class BirdsController < ApplicationController
     bird = Bird.find_by(id: params[:id])
     if bird
       bird.update(bird_params)
-      render json: bird
+      render json: bird, status: :accepted
     else
-      render json: { error: "Bird not found" }, status: :not_found
+      render json: { error: 'Bird not found' }, status: :not_found
     end
   end
 
@@ -38,9 +38,19 @@ class BirdsController < ApplicationController
     bird = Bird.find_by(id: params[:id])
     if bird
       bird.update(likes: bird.likes + 1)
-      render json: bird
+      render json: bird, status: :accepted
     else
-      render json: { error: "Bird not found" }, status: :not_found
+      render json: { error: 'Bird not found' }, status: :not_found
+    end
+  end
+
+  def destroy
+    bird = Bird.find(params[:id])
+    if bird
+      bird.destroy
+      head :no_content
+    else
+      render json: { error: 'Bird not found' }, status: :not_found
     end
   end
 
